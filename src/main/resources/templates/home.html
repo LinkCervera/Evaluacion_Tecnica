@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio - Sistema de Inventario Castores</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #E31E24 0%, #C01717 100%);
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-name {
+      font-size: 14px;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid white;
+      padding: 8px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+      background: white;
+      color: #E31E24;
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .welcome-section {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .welcome-section h2 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .welcome-section p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* Menu Cards */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .menu-card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(227, 30, 36, 0.3);
+    }
+
+    .menu-card-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .menu-card h3 {
+      color: #E31E24;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .menu-card p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Role Badge */
+    .role-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .role-admin {
+      background: #333;
+      color: white;
+    }
+
+    .role-almacenista {
+      background: #E31E24;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<!-- Header -->
+<div class="header">
+  <div class="header-content">
+    <h1>🦫 SISTEMA DE INVENTARIO CASTORES</h1>
+    <div class="user-info">
+                <span class="user-name">
+                   <!--<span sec:authentication="name">Usuario</span>-->
+                    <span class="role-badge" sec:authorize="hasRole('Administrador')" th:classappend="'role-admin'">
+                        ADMINISTRADOR
+                    </span>
+                    <span class="role-badge" sec:authorize="hasRole('Almacenista')" th:classappend="'role-almacenista'">
+                        ALMACENISTA
+                    </span>
+                </span>
+      <form th:action="@{/logout}" method="post" style="display: inline;">
+        <button type="submit" class="btn-logout">Cerrar Sesión</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+  <div class="welcome-section">
+    <h2>Bienvenido al Sistema de Inventario</h2>
+    <p>Selecciona una opción del menú para comenzar a trabajar con el sistema.</p>
+  </div>
+
+  <!-- Menu Grid -->
+  <div class="menu-grid">
+    <!-- Módulo Inventario (Ambos roles) -->
+    <a href="/inventario" class="menu-card">
+      <div class="menu-card-icon">📦</div>
+      <h3>Inventario</h3>
+      <p>Ver productos, agregar nuevos, aumentar existencias y gestionar el almacén</p>
+    </a>
+
+    <!-- Módulo Salida (Solo Almacenista) -->
+    <a href="/salida" class="menu-card" sec:authorize="hasRole('Almacenista')">
+      <div class="menu-card-icon">📤</div>
+      <h3>Salida de Productos</h3>
+      <p>Registrar salidas de productos del almacén</p>
+    </a>
+
+    <!-- Módulo Historial (Solo Administrador) -->
+    <a href="/historial" class="menu-card" sec:authorize="hasRole('Administrador')">
+      <div class="menu-card-icon">📋</div>
+      <h3>Historial de Movimientos</h3>
+      <p>Ver y filtrar el historial de entradas y salidas</p>
+    </a>
+  </div>
+</div>
+</body>
+</html>
